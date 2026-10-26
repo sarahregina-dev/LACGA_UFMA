@@ -131,6 +131,38 @@
   @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}}
   @media (max-width:600px){.cards{grid-template-columns:1fr}}
 
+  /* Artigos */
+  .papers{background:var(--white)}
+  .papers-tools{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:36px}
+  .papers-search{flex:1 1 280px;max-width:420px;display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:0 18px;color:var(--muted)}
+  .papers-search:focus-within{border-color:var(--navy-soft)}
+  .papers-search svg{width:18px;height:18px;flex:none}
+  .papers-search input{flex:1;border:0;background:none;font:inherit;font-size:.95rem;color:var(--ink);padding:12px 0;outline:none}
+  .papers-filters{display:flex;flex-wrap:wrap;gap:8px}
+  .papers-filters button{font:inherit;cursor:pointer;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:.86rem;color:var(--navy);font-weight:500;transition:background .2s,color .2s,border-color .2s}
+  .papers-filters button:hover{border-color:var(--navy-soft);color:var(--navy-soft)}
+  .papers-filters button[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--white)}
+  .papers-count{margin:22px 0 16px;font-size:.88rem;color:var(--muted)}
+  .papers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .paper{display:flex;flex-direction:column;gap:10px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:26px;transition:border-color .2s,transform .2s,box-shadow .2s}
+  .paper:hover{border-color:var(--navy-soft);transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(13,25,48,.35)}
+  .paper-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .paper-tag{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--navy-soft)}
+  .paper-tag svg{width:18px;height:18px}
+  .paper-ano{font-family:var(--wide);font-weight:700;font-size:.9rem;color:var(--muted)}
+  .paper h3{font-family:var(--wide);font-weight:700;font-size:1.12rem;line-height:1.3;color:var(--navy)}
+  .paper .autores{font-size:.9rem;color:var(--muted)}
+  .paper .evento{font-size:.86rem;color:var(--ink);font-weight:500}
+  .paper-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:12px}
+  .paper-actions a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:600;font-size:.88rem;padding:9px 16px;border-radius:999px;border:1.5px solid var(--navy);transition:background .2s,color .2s}
+  .paper-actions a svg{width:16px;height:16px}
+  .paper-actions .ler{background:var(--navy);color:var(--white)}
+  .paper-actions .ler:hover{background:#2C2B30;border-color:#2C2B30}
+  .paper-actions .baixar{color:var(--navy)}
+  .paper-actions .baixar:hover{background:var(--navy);color:var(--white)}
+  .paper-actions .em-breve{font-size:.84rem;color:var(--muted);font-style:italic}
+  .papers-vazio{grid-column:1/-1;text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:var(--radius);color:var(--muted)}
+
   /* Prova social */
   .proof{background:var(--navy);color:var(--white)}
   .proof h2.display{color:var(--white)}
@@ -216,6 +248,7 @@
     <ul>
       <li><a href="#sobre">Sobre</a></li>
       <li><a href="#atividades">Atividades</a></li>
+      <li><a href="#artigos">Artigos</a></li>
       <li><a href="#relatos">Relatos</a></li>
       <li><a href="#equipe">Equipe</a></li>
       <li><a href="#faq">Dúvidas</a></li>
@@ -285,6 +318,24 @@
       <div class="card"><span class="num">05</span><h3>Extensão</h3><p>Projetos que conectam a liga à comunidade e ampliam o impacto do que aprendemos.</p></div>
       <div class="card"><span class="num">06</span><h3>Gestão</h3><p>Desenvolvimento de habilidades de liderança, comunicação, trabalho em equipe e organização.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- ARTIGOS: os PDFs ficam em artigos/ e a lista em artigos/artigos.js -->
+<section class="papers" id="artigos">
+  <div class="wrap">
+    <p class="eyebrow">Produção científica</p>
+    <h2 class="display">Artigos e trabalhos.</h2>
+    <p class="lead">Trabalhos produzidos pelos ligantes da LACGA e apresentados em congressos e eventos científicos.</p>
+    <div class="papers-tools">
+      <label class="papers-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="papersBusca" placeholder="Buscar por título, autor ou evento" aria-label="Buscar artigos">
+      </label>
+      <div class="papers-filters" id="papersFiltros" role="group" aria-label="Filtrar por tipo"></div>
+    </div>
+    <p class="papers-count" id="papersTotal" aria-live="polite"></p>
+    <div class="papers-grid" id="papersLista"></div>
   </div>
 </section>
 
@@ -369,7 +420,75 @@
   </div>
 </footer>
 
+<script src="artigos/artigos.js"></script>
 <script>
+  /* ARTIGOS: a lista fica em artigos/artigos.js */
+  (function(){
+    const artigos = Array.isArray(window.ARTIGOS) ? window.ARTIGOS : [];
+    const lista = document.getElementById('papersLista');
+    const total = document.getElementById('papersTotal');
+    const busca = document.getElementById('papersBusca');
+    const filtros = document.getElementById('papersFiltros');
+    const icPdf = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>';
+    const icLer = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const icBaixar = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+    const semAcento = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    let tipoAtivo = 'Todos';
+
+    const tipos = ['Todos', ...new Set(artigos.map(a => a.tipo).filter(Boolean))];
+    if (tipos.length > 2) {
+      tipos.forEach(t => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = t;
+        b.setAttribute('aria-pressed', t === tipoAtivo);
+        b.addEventListener('click', () => {
+          tipoAtivo = t;
+          filtros.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+          render();
+        });
+        filtros.append(b);
+      });
+    }
+
+    function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+
+    function render(){
+      const q = semAcento(busca.value.trim());
+      const itens = artigos.filter(a =>
+        (tipoAtivo === 'Todos' || a.tipo === tipoAtivo) &&
+        (!q || semAcento([a.titulo, a.autores, a.evento, a.ano, a.tipo].join(' ')).includes(q)));
+      lista.innerHTML = '';
+      total.textContent = artigos.length ? (itens.length + (itens.length === 1 ? ' trabalho' : ' trabalhos')) : '';
+      if (!itens.length) {
+        lista.append(el('p', 'papers-vazio', artigos.length ? 'Nenhum trabalho encontrado para essa busca.' : 'Em breve, os trabalhos da LACGA estarão disponíveis aqui.'));
+        return;
+      }
+      itens.forEach(a => {
+        const card = el('article', 'paper');
+        const top = el('div', 'paper-top');
+        const tag = el('span', 'paper-tag'); tag.innerHTML = icPdf; tag.append(a.tipo || 'Trabalho');
+        top.append(tag, el('span', 'paper-ano', a.ano || ''));
+        card.append(top, el('h3', null, a.titulo));
+        if (a.autores) card.append(el('p', 'autores', a.autores));
+        if (a.evento) card.append(el('p', 'evento', a.evento));
+        const acoes = el('div', 'paper-actions');
+        if (a.arquivo) {
+          const url = 'artigos/' + encodeURIComponent(a.arquivo);
+          const ler = el('a', 'ler'); ler.href = url; ler.target = '_blank'; ler.rel = 'noopener'; ler.innerHTML = icLer; ler.append('Ler PDF');
+          const baixar = el('a', 'baixar'); baixar.href = url; baixar.download = a.arquivo; baixar.innerHTML = icBaixar; baixar.append('Baixar');
+          acoes.append(ler, baixar);
+        } else {
+          acoes.append(el('span', 'em-breve', 'PDF em breve'));
+        }
+        card.append(acoes);
+        lista.append(card);
+      });
+    }
+
+    busca.addEventListener('input', render);
+    render();
+  })();
+
   /* EQUIPE: para cada pessoa, troque "nome" e coloque a foto em imgs/ (ex.: foto: "imgs/maria_silva.jpeg").
      Sem foto, aparecem as iniciais do nome. */
   const EQUIPE = {
