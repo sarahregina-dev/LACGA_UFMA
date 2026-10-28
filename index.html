@@ -265,8 +265,8 @@
   .member span{font-size:.84rem;color:var(--suave)}
   /* Preceptores: lista (foto redonda + nome + especialidade + local) */
   .members.lista{grid-template-columns:1fr;justify-content:stretch;gap:12px}
-  .precep{display:flex;align-items:flex-start;gap:16px;background:var(--navy);border-radius:var(--r);padding:20px;animation:surgir .35s ease both}
-  .precep .member-photo{flex:none;width:64px;height:64px;aspect-ratio:auto;border-radius:50%;border:2px solid rgba(255,255,255,.25);font-size:.62rem;letter-spacing:.04em;overflow:hidden}
+  .precep{display:flex;align-items:center;gap:16px;background:var(--navy);border-radius:var(--r);padding:20px;animation:surgir .35s ease both}
+  .precep .member-photo{flex:none;width:64px;height:64px;aspect-ratio:auto;border-radius:50%;border:2px solid rgba(255,255,255,.25);font-size:1.1rem;overflow:hidden}
   .precep b{display:block;font-family:var(--wide);font-weight:700;font-size:1.08rem;color:#fff;margin:4px 0 6px}
   .precep .esp{display:block;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#C3CCE2;line-height:1.5}
   .precep .local{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.9rem;color:#D3DBEE}
@@ -617,11 +617,19 @@
   const EQUIPE = {
     orientacao: { desc: "", membros: [
       { nome: "Prof. Dr. Ozimo Gama", cargo: "Orientador", foto: "" } ]},
+    // Preceptores: fotos em imgs/preceptores/. "especialidade" e "local" são opcionais (vazio = a linha não aparece).
     preceptores: { formato: "lista", desc: "", membros: [
-      { nome: "Nome do(a) preceptor(a)", especialidade: "Especialidade", local: "Hospital", foto: "" },
-      { nome: "Nome do(a) preceptor(a)", especialidade: "Especialidade", local: "Hospital", foto: "" },
-      { nome: "Nome do(a) preceptor(a)", especialidade: "Especialidade", local: "Hospital", foto: "" },
-      { nome: "Nome do(a) preceptor(a)", especialidade: "Especialidade", local: "Hospital", foto: "" } ]},
+      { nome: "Dr. Benedito Mouchrek", especialidade: "", local: "", foto: "imgs/preceptores/benedito-mouchrek.jpg" },
+      { nome: "Dr. Bruno Lobo", especialidade: "Ortopedia e Traumatologia", local: "", foto: "imgs/preceptores/bruno-lobo.jpg" },
+      { nome: "Dr. Daniel Tomich", especialidade: "", local: "", foto: "imgs/preceptores/daniel-tomich.jpg" },
+      { nome: "Dr. Gabriel Macedo", especialidade: "", local: "", foto: "imgs/preceptores/gabriel-macedo.jpg" },
+      { nome: "Dr. Gabriel Pimentel", especialidade: "", local: "", foto: "imgs/preceptores/gabriel-pimentel.jpg" },
+      { nome: "Dr. Igor Neiva", especialidade: "Cirurgia Oncológica", local: "", foto: "imgs/preceptores/igor-neiva.jpg" },
+      { nome: "Dr. João Gabriel Braga", especialidade: "", local: "", foto: "imgs/preceptores/joao-gabriel-braga.jpg" },
+      { nome: "Dr. Leonardo Castro", especialidade: "", local: "", foto: "imgs/preceptores/leonardo-castro.jpg" },
+      { nome: "Dra. Patrícia Canelas", especialidade: "Urologia", local: "", foto: "imgs/preceptores/patricia-canelas.jpg" },
+      { nome: "Dr. Romerito Neiva", especialidade: "", local: "", foto: "imgs/preceptores/romerito-neiva.jpg" },
+      { nome: "Dr. Vitor Barroso", especialidade: "Ortopedia", local: "", foto: "imgs/preceptores/vitor-barroso.jpg" } ]},
     presidencia: { desc: "", membros: [
       { nome: "Nome do(a) presidente", cargo: "Presidente", foto: "" },
       { nome: "Nome do(a) presidente", cargo: "Vice-presidente", foto: "" } ]},
@@ -686,11 +694,14 @@
         const nome = document.createElement('b'); nome.textContent = m.nome;
         if (lista) {
           const info = document.createElement('div');
-          const esp = document.createElement('span'); esp.className = 'esp'; esp.textContent = m.especialidade;
+          info.append(nome);
+          if (m.especialidade) { const esp = document.createElement('span'); esp.className = 'esp'; esp.textContent = m.especialidade; info.append(esp); }
+          if (m.local) {
           const local = document.createElement('span'); local.className = 'local';
           local.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
           local.append(document.createTextNode(m.local));
-          info.append(nome, esp, local);
+          info.append(local);
+          }
           card.append(foto, info);
         } else {
           const papel = document.createElement('span'); papel.textContent = m.cargo;
