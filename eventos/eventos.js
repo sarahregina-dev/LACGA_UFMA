@@ -38,7 +38,7 @@ window.EVENTOS = [
     data: "2026-11-04",
     horario: "17h",
     local: "ILA (Prédio de Medicina)",
-    linkFormulario: "",
+    linkFormulario: "https://docs.google.com/forms/d/e/1FAIpQLSc0n7OzvP9ribu9qjuzQVYtrdcGbEKwgcrudNKMkqP3ZFHrFQ/viewform",
     inscricoesAbertas: true
   }
 ];
