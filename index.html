@@ -248,6 +248,8 @@
   .equipe .chips button[aria-selected="true"]{background:var(--navy);color:#fff}
   .team-desc{color:var(--suave);font-size:.95rem;max-width:680px;margin:20px 0}
   .team-desc:empty{margin:0 0 20px}
+  /* Área das fotos da Equipe: dá para arrastar para o lado e trocar de diretoria */
+  @media (hover:hover) and (pointer:fine){#equipe [role="tabpanel"]{cursor:grab;user-select:none}#equipe [role="tabpanel"]:active{cursor:grabbing}}
   /* Diretorias com mais de um membro: carrossel (no celular aparece um pedaço do próximo card) */
   .members.carrossel{display:flex;justify-content:flex-start;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;margin-inline:-16px;padding:0 16px 4px;scroll-padding-inline:16px}
   .members.carrossel::-webkit-scrollbar{display:none}
@@ -362,7 +364,7 @@
   <div class="wrap">
     <div class="sobre-texto">
       <p class="eyebrow">NOSSOS PILARES</p>
-      <h2>O interesse pela cirurgia começa aqui.</h2>
+      <h2>O interesse pela cirurgia começa aqui</h2>
     </div>
     <div class="pilares">
       <div class="pilar"><h3>Ensino</h3><p>Promove o aprofundamento dos conhecimentos em Cirurgia Geral e Anatomia Cirúrgica por meio de aulas, discussões científicas, palestras e outras atividades de formação acadêmica.</p></div>
@@ -422,8 +424,8 @@
       <button type="button" role="tab" data-cargo="orientacao">Orientação</button>
       <button type="button" role="tab" data-cargo="presidencia">Presidência</button>
       <button type="button" role="tab" data-cargo="secretaria">Secretaria</button>
-      <button type="button" role="tab" data-cargo="tesouraria">Tesouraria</button>
       <button type="button" role="tab" data-cargo="marketing">Marketing</button>
+      <button type="button" role="tab" data-cargo="tesouraria">Tesouraria</button>
       <button type="button" role="tab" data-cargo="ensino">Ensino</button>
       <button type="button" role="tab" data-cargo="pesquisa">Pesquisa</button>
       <button type="button" role="tab" data-cargo="extensao">Extensão</button>
@@ -665,7 +667,7 @@
       { nome: "Expedito Alves", cargo: "Presidência", foto: "imgs/equipe/expedito-alves.jpg" },
       { nome: "Davi Palácio", cargo: "Presidência", foto: "imgs/equipe/davi-palacio.jpg" } ]},
     secretaria: { desc: "", membros: [
-      { nome: "Ryan", cargo: "Secretário", foto: "imgs/equipe/ryan.jpg" } ]},
+      { nome: "Ryan Abreu", cargo: "Secretário", foto: "imgs/equipe/ryan.jpg" } ]},
     tesouraria: { desc: "", membros: [
       { nome: "Igor Aguiar", cargo: "Tesoureiro", foto: "imgs/equipe/igor-aguiar.jpg" },
       { nome: "Júlio Barros", cargo: "Tesoureiro", foto: "imgs/equipe/julio-barros.jpg" } ]},
@@ -767,6 +769,36 @@
     });
     mostrar('orientacao');
     montar(document.getElementById('preceptoresLista'), EQUIPE.preceptores);
+
+    // Arrastar para o lado na área das fotos troca de diretoria (esquerda = próxima, direita = anterior).
+    // Se a diretoria tem carrossel, primeiro ele passa pelas pessoas; só no fim/início troca de diretoria.
+    const painel = list.parentElement;
+    let inicioX = 0, inicioY = 0, noInicio = true, noFim = true, arrastando = false;
+    function comecar(x, y){
+      inicioX = x; inicioY = y; arrastando = true;
+      const max = list.scrollWidth - list.clientWidth;
+      noInicio = list.scrollLeft <= 4;
+      noFim = list.scrollLeft >= max - 4;
+    }
+    function terminar(x, y){
+      if (!arrastando) return;
+      arrastando = false;
+      const dx = x - inicioX, dy = y - inicioY;
+      if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return; // toque/clique ou rolagem para baixo
+      const atual = [...tabs].findIndex(t => t.getAttribute('aria-selected') === 'true');
+      const destino = dx < 0 ? (noFim ? atual + 1 : -1) : (noInicio ? atual - 1 : -1);
+      if (destino < 0 || destino >= tabs.length) return;
+      const aba = tabs[destino];
+      mostrar(aba.dataset.cargo);
+      aba.parentElement.scrollTo({ left: aba.offsetLeft - aba.parentElement.offsetLeft - 16, behavior: 'smooth' });
+    }
+    // Dedo (celular e iPad)
+    painel.addEventListener('touchstart', e => comecar(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    painel.addEventListener('touchend', e => terminar(e.changedTouches[0].clientX, e.changedTouches[0].clientY), { passive: true });
+    // Mouse (computador): segurar, arrastar para o lado e soltar
+    painel.addEventListener('mousedown', e => { if (e.button === 0) { e.preventDefault(); comecar(e.clientX, e.clientY); } });
+    window.addEventListener('mouseup', e => terminar(e.clientX, e.clientY));
+    painel.addEventListener('dragstart', e => e.preventDefault()); // não "pega" a foto ao arrastar
   })();
 
   /* RELATOS: carrossel. Para adicionar um relato, copie um <div class="quote"> na seção Relatos. */
