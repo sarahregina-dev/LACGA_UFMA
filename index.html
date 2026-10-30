@@ -123,7 +123,7 @@
   /* Subtítulos dos cards (Procedimentos assistidos, Trabalhos aprovados, Campos de estágio): mesmo estilo nos três */
   .num-curto span,.num-largo b{font-family:var(--body);font-size:.9rem;font-weight:700;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:#8A8F9B}
   .num-largo b{font-size:1rem;color:var(--navy)}
-  /* Cards centralizados (450+, 15+ e o título "Campos de estágio") */
+  /* Cards centralizados (procedimentos, trabalhos e o título "Campos de estágio") */
   .num-curto,.num-largo{text-align:center}
   /* Card dos trabalhos: clicável, leva para Produção científica */
   .num-link{display:block;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s}
@@ -343,7 +343,7 @@
   <div class="wrap num-grid">
     <div class="num num-curto"><b>450+</b><span><strong>Procedimentos assistidos</strong></span></div>
     <!-- O número é a quantidade de trabalhos em artigos/artigos.js (atualiza sozinho) -->
-    <a class="num num-curto num-link" href="#artigos" aria-label="Ver os trabalhos aprovados"><b id="contTrabalhos">15+</b><span><strong>Trabalhos aprovados</strong></span></a>
+    <a class="num num-curto num-link" href="#artigos" aria-label="Ver os trabalhos aprovados"><b id="contTrabalhos">0</b><span><strong>Trabalhos aprovados</strong></span></a>
     <div class="num num-largo">
       <b>Campos de estágio</b><span><strong></strong></span>
       <ul class="hospitais">
@@ -551,7 +551,7 @@
   (function(){
     const alvo = document.getElementById('contTrabalhos');
     const total = Array.isArray(window.ARTIGOS) ? window.ARTIGOS.length : 0;
-    if (!alvo || !total) return; // sem lista, fica o texto que está no HTML
+    if (!alvo || !total) return; // sem trabalhos na lista, fica o 0 do HTML
     const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window);
     if (semAnimacao) { alvo.textContent = total; return; }
     alvo.textContent = '0';
