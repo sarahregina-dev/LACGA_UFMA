@@ -6,12 +6,13 @@
 
   Se trocar fontes, ícones ou imagens e eles não atualizarem no celular, aumente o número da VERSAO.
 */
-const VERSAO = 'lacga-v3';
+const VERSAO = 'lacga-v4';
 
 const ESSENCIAIS = [
   './',
   'index.html',
   'artigos/artigos.js',
+  'eventos/eventos.js',
   'seletivo.html',
   'seletivo/seletivo.js',
   'manifest.webmanifest',
