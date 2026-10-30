@@ -125,6 +125,9 @@
   .num-largo b{font-size:1rem;color:var(--navy)}
   /* Cards centralizados (450+, 15+ e o título "Campos de estágio") */
   .num-curto,.num-largo{text-align:center}
+  /* Card dos trabalhos: clicável, leva para Produção científica */
+  .num-link{display:block;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s}
+  @media (hover:hover){.num-link:hover{border-color:#23375C;box-shadow:0 8px 20px -12px rgba(13,25,48,.35)}}
   .num strong{font-weight:inherit;color:inherit}
   .num-largo b{margin-bottom:0}
   .num-largo > span:empty{display:none}
@@ -337,7 +340,8 @@
 <div class="numeros">
   <div class="wrap num-grid">
     <div class="num num-curto"><b>450+</b><span><strong>Procedimentos assistidos</strong></span></div>
-    <div class="num num-curto"><b>15+</b><span><strong>Trabalhos aprovados</strong></span></div>
+    <!-- O número é a quantidade de trabalhos em artigos/artigos.js (atualiza sozinho) -->
+    <a class="num num-curto num-link" href="#artigos" aria-label="Ver os trabalhos aprovados"><b id="contTrabalhos">15+</b><span><strong>Trabalhos aprovados</strong></span></a>
     <div class="num num-largo">
       <b>Campos de estágio</b><span><strong></strong></span>
       <ul class="hospitais">
@@ -540,6 +544,28 @@
     recalcular();
     return recalcular;
   }
+
+  /* NÚMEROS: "Trabalhos aprovados" = quantidade de trabalhos em artigos/artigos.js */
+  (function(){
+    const alvo = document.getElementById('contTrabalhos');
+    const total = Array.isArray(window.ARTIGOS) ? window.ARTIGOS.length : 0;
+    if (!alvo || !total) return; // sem lista, fica o texto que está no HTML
+    const semAnimacao = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window);
+    if (semAnimacao) { alvo.textContent = total; return; }
+    alvo.textContent = '0';
+    const obs = new IntersectionObserver(entradas => {
+      if (!entradas.some(e => e.isIntersecting)) return;
+      obs.disconnect();
+      const inicio = performance.now(), duracao = 900;
+      (function passo(agora){
+        const t = Math.min((agora - inicio) / duracao, 1);
+        alvo.textContent = Math.round(total * (1 - Math.pow(1 - t, 3)));
+        if (t < 1) requestAnimationFrame(passo);
+      })(inicio);
+      setTimeout(() => { alvo.textContent = total; }, duracao + 150); // garante o número final mesmo se a animação for pausada
+    }, { threshold: .6 });
+    obs.observe(alvo);
+  })();
 
   /* ARTIGOS: a lista fica em artigos/artigos.js */
   (function(){
