@@ -853,7 +853,8 @@
   })();
 
   /* EVENTOS: a lista fica em eventos/eventos.js. Calendário do mês + eventos daquele mês.
-     Evento com data passada aparece como "Inscrições encerradas" automaticamente. */
+     Regra das inscrições: fecham no horário de início do evento (ex.: horario "17h" → fecham às 17:00 do dia).
+     Sem horário, fecham no fim do dia. Com a página aberta, o botão se desativa sozinho na hora certa. */
   (function(){
     const grade = document.getElementById('calGrade');
     const titulo = document.getElementById('calMes');
@@ -870,12 +871,34 @@
     };
     function el(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 
+    // Horário de início a partir do texto do campo horario: "17h" → 17:00, "17h30"/"17:30" → 17:30, "8h às 12h" → 8:00
+    function horaInicio(texto){
+      const m = String(texto || '').match(/(\d{1,2})\s*(?:h|:)\s*(\d{2})?/i);
+      if (!m) return null;
+      const h = Number(m[1]), min = Number(m[2] || 0);
+      return h < 24 && min < 60 ? [h, min] : null;
+    }
+
     const eventos = (Array.isArray(window.EVENTOS) ? window.EVENTOS : [])
       .filter(e => e && e.titulo && /^\d{4}-\d{2}-\d{2}$/.test(e.data || ''))
-      .map(e => { const [a, m, d] = e.data.split('-').map(Number); const quando = new Date(a, m - 1, d); return { ...e, quando, aberto: !!e.inscricoesAbertas && quando >= hoje }; })
-      // 3 status do formulário: encerrado (data passou ou marcado como encerrado), ativo (tem link) ou em breve (sem link)
-      .map(e => ({ ...e, status: !e.aberto ? 'encerrado' : (e.linkFormulario ? 'ativo' : 'breve') }))
+      .map(e => {
+        const [a, m, d] = e.data.split('-').map(Number);
+        const hora = horaInicio(e.horario);
+        // prazo das inscrições: início do evento; sem horário, fim do dia
+        const prazo = hora ? new Date(a, m - 1, d, hora[0], hora[1]) : new Date(a, m - 1, d, 23, 59, 59);
+        return { ...e, quando: new Date(a, m - 1, d), prazo };
+      })
       .sort((x, y) => x.quando - y.quando);
+
+    // 3 status do formulário: encerrado (passou do horário ou marcado como encerrado), ativo (tem link) ou em breve (sem link)
+    function calcularStatus(){
+      const agora = new Date();
+      eventos.forEach(e => {
+        e.aberto = !!e.inscricoesAbertas && agora < e.prazo;
+        e.status = !e.aberto ? 'encerrado' : (e.linkFormulario ? 'ativo' : 'breve');
+      });
+    }
+    calcularStatus();
 
     // Sempre abre no mês atual; as setas mostram os outros meses
     let mes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
@@ -962,9 +985,16 @@
     desenhar();
 
     // Sinaliza eventos com inscrições abertas: aviso acima do calendário + pontinho em "Eventos" no menu
+    function sinalizar(){
     const abertos = eventos.filter(e => e.status === 'ativo');
+    const aviso = document.getElementById('eventosAbertos');
+    aviso.innerHTML = '';
+    aviso.hidden = !abertos.length;
+    document.querySelectorAll('a[data-secoes="eventos"]').forEach(a => {
+      a.classList.toggle('tem-aberto', !!abertos.length);
+      if (abertos.length) a.setAttribute('aria-label', 'Eventos (há inscrições abertas)'); else a.removeAttribute('aria-label');
+    });
     if (abertos.length) {
-      const aviso = document.getElementById('eventosAbertos');
       abertos.forEach(ev => {
         const b = el('button'); b.type = 'button';
         b.setAttribute('aria-label', 'Inscrições abertas: ' + ev.titulo + ', ' + doisDig(ev.quando.getDate()) + '/' + doisDig(ev.quando.getMonth() + 1));
@@ -972,12 +1002,28 @@
         b.addEventListener('click', () => irPara(ev));
         aviso.append(b);
       });
-      aviso.hidden = false;
-      document.querySelectorAll('a[data-secoes="eventos"]').forEach(a => {
-        a.classList.add('tem-aberto');
-        a.setAttribute('aria-label', 'Eventos (há inscrições abertas)');
-      });
     }
+    }
+    sinalizar();
+
+    // Quando chega o horário de um evento, fecha as inscrições sem precisar recarregar a página
+    let relogio;
+    function agendarFechamento(){
+      clearTimeout(relogio);
+      const agora = Date.now();
+      const proximo = eventos.filter(e => e.aberto).map(e => e.prazo.getTime()).filter(t => t > agora).sort((x, y) => x - y)[0];
+      if (!proximo) return;
+      relogio = setTimeout(atualizar, Math.min(proximo - agora + 500, 2147483000));
+    }
+    function atualizar(){
+      const antes = eventos.map(e => e.status).join();
+      calcularStatus();
+      if (eventos.map(e => e.status).join() !== antes) { desenhar(); sinalizar(); }
+      agendarFechamento();
+    }
+    agendarFechamento();
+    // celular com a aba em segundo plano pode atrasar o relógio: confere de novo ao voltar para o site
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) atualizar(); });
   })();
 
   /* PWA: registra o service worker (só funciona em https ou localhost) */

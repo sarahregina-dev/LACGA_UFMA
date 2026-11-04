@@ -10,7 +10,8 @@
     tipo              – ex.: "Aula aberta", "Curso", "Simpósio", "Ação de extensão"
     ministrante       – quem vai ministrar, ex.: "Dr. Daniel Tomich" (opcional; aparece como "com Dr. ...")
     data              – no formato ANO-MÊS-DIA (ex.: "2026-11-04")
-    horario           – ex.: "17h" ou "8h às 12h" (opcional)
+    horario           – ex.: "17h", "17h30" ou "8h às 12h". As inscrições FECHAM no horário de início
+                        (ex.: "17h" → o botão "Inscrever-se" se desativa às 17:00 do dia). Sem horário, fecham no fim do dia.
     local             – ex.: "ILA (Prédio de Medicina)" (opcional)
     linkFormulario    – link do forms de inscrição
     inscricoesAbertas – true normalmente; false para encerrar as inscrições antes do dia do evento
@@ -18,7 +19,7 @@
   Status do formulário (o site escolhe sozinho):
     • Inscrições em breve   – linkFormulario vazio ""      → botão "Formulário em breve" bloqueado
     • Inscrições abertas    – linkFormulario preenchido    → botão "Inscrever-se" abre o forms
-    • Inscrições encerradas – a data do evento já passou, ou inscricoesAbertas: false → botão bloqueado
+    • Inscrições encerradas – chegou o horário de início do evento, ou inscricoesAbertas: false → botão bloqueado
 */
 window.EVENTOS = [
   {
