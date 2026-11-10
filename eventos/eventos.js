@@ -41,5 +41,15 @@ window.EVENTOS = [
     local: "ILA (Prédio de Medicina)",
     linkFormulario: "https://docs.google.com/forms/d/e/1FAIpQLSc0n7OzvP9ribu9qjuzQVYtrdcGbEKwgcrudNKMkqP3ZFHrFQ/viewform",
     inscricoesAbertas: true
+  },
+  {
+    titulo: "Traumatismo raquimedular: manejo e aspectos",
+    tipo: "Aula aberta",
+    ministrante: "Dr. Hector Carvalho",
+    data: "2026-11-12",
+    horario: "17h30",
+    local: "ILA (Prédio de Medicina)",
+    linkFormulario: "https://docs.google.com/forms/d/e/1FAIpQLSc_0wGaCVpspeyHELsQ9qiIVrPe2E4gaIKAP7RbZGWjKyi3Xw/viewform",
+    inscricoesAbertas: true
   }
 ];
