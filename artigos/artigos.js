@@ -17,6 +17,54 @@
 */
 window.ARTIGOS = [
   {
+    titulo: "Antibioticoterapia isolada vs. apendicectomia em apendicite não complicada",
+    autores: "Davi Palácio, Júlio Barros e Igor Aguiar",
+    evento: "XI COIMAMA",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
+    titulo: "Falência precoce de fístula arteriovenosa: fatores preditivos",
+    autores: "Daniel Torres e Júlio Barros",
+    evento: "XI COIMAMA",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
+    titulo: "Letalidade hospitalar por apendicite aguda e sua associação com indicadores municipais de acesso a serviços cirúrgicos no Maranhão",
+    autores: "Ana Luiza Brito Gomes, Wellington Ryan Abreu Araújo e Davi Palácio",
+    evento: "XI COIMAMA",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
+    titulo: "Perfil epidemiológico e mortalidade das internações por doenças do apêndice no Sistema Único de Saúde no Maranhão",
+    autores: "Maria Luiza Lira Rodrigues, Wellington Ryan Abreu Araújo, Augusto César, Enzo Lima Coelho, Expedito Alves Rodrigues Neto e Ana Luiza Brito Gomes",
+    evento: "XI COIMAMA",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
+    titulo: "Análise de cobertura endoscópica e mortalidade por neoplasia gastrointestinal no Maranhão",
+    autores: "Kennio Ribeiro",
+    evento: "SBAD",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
+    titulo: "Gastrectomia vertical vs. bypass gástrico em Y-de-Roux no tratamento da obesidade com cirrose compensada com MASLD e diabetes tipo 2",
+    autores: "Kennio Ribeiro",
+    evento: "SBAD",
+    ano: 2026,
+    tipo: "Artigo",
+    arquivo: ""
+  },
+  {
     titulo: "Complicações da pancreatectomia distal laparoscópica: revisão sistemática de fatores preditivos de fístula pancreática",
     autores: "Wellington Ryan Abreu Araújo, Enzo Lima Coelho, Expedito Alves Rodrigues Neto, João Lucas Sousa de Almeida, Maria Luiza Lira Rodrigues, Mônica Giovana Ribeiro Cutrim e Ozimo Pereira Gama Filho",
     evento: "XI COIMAMA",
