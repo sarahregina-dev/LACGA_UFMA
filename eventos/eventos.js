@@ -51,5 +51,15 @@ window.EVENTOS = [
     local: "ILA (Prédio de Medicina)",
     linkFormulario: "https://docs.google.com/forms/d/e/1FAIpQLSc_0wGaCVpspeyHELsQ9qiIVrPe2E4gaIKAP7RbZGWjKyi3Xw/viewform",
     inscricoesAbertas: true
+  },
+  {
+    titulo: "Hérnias umbilicais e epigástricas",
+    tipo: "Aula aberta",
+    ministrante: "Dr. Luiz Guimarães",
+    data: "2026-11-16",
+    horario: "17h30",
+    local: "ILA (Prédio de Medicina)",
+    linkFormulario: "",
+    inscricoesAbertas: true
   }
 ];
